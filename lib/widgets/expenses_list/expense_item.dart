@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/models/expense.dart';
 
+/// A representation of a single expense.
 class ExpenseItem extends StatelessWidget {
   const ExpenseItem(this.expense, {super.key});
 
+  /// The expense to display.
   final Expense expense;
 
   @override
@@ -31,7 +33,7 @@ class ExpenseItem extends StatelessWidget {
                 const Spacer(),
                 Row(
                   children: [
-                    Icon(categoryIcons[expense.category]),
+                    Icon(expense.category.icon, size: 16),
                     const SizedBox(width: 8),
                     Text(expense.formattedDate),
                   ],

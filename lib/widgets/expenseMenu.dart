@@ -2,23 +2,40 @@ import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/models/expense.dart';
 
-class NewExpense extends StatefulWidget {
-  const NewExpense({super.key, required this.onAddExpense});
+/// A menu that allows the user to add or edit an expense.
+class ExpenseMenu extends StatefulWidget {
+  const ExpenseMenu(
+      {super.key, required this.onFinishedExpense, this.itemToEdit});
 
-  final void Function(Expense expense) onAddExpense;
+  ///Function that is called when the user is done adding or editing an expense.
+  final void Function(Expense expense) onFinishedExpense;
+
+  /// The expense to edit. If null, a new expense will be created.
+  final Expense? itemToEdit;
 
   @override
-  State<NewExpense> createState() {
-    return _NewExpenseState();
+  State<ExpenseMenu> createState() {
+    return _ExpenseMenuState();
   }
 }
 
-class _NewExpenseState extends State<NewExpense> {
+/// A state class for the expense menu.
+class _ExpenseMenuState extends State<ExpenseMenu> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
   Category _selectedCategory = Category.leisure;
 
+  @override
+  void initState() {
+    super.initState();
+    _titleController.text = widget.itemToEdit?.title ?? '';
+    _amountController.text = widget.itemToEdit?.amount.toString() ?? '';
+    _selectedDate = widget.itemToEdit?.date;
+    _selectedCategory = widget.itemToEdit?.category ?? Category.leisure;
+  }
+
+  /// A function that presents a date picker to the user.
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
@@ -33,9 +50,9 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  /// A function that submits the expense data to the parent widget.
   void _submitExpenseData() {
-    final enteredAmount = double.tryParse(_amountController
-        .text); // tryParse('Hello') => null, tryParse('1.12') => 1.12
+    final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
     if (_titleController.text.trim().isEmpty ||
         amountIsInvalid ||
@@ -58,15 +75,22 @@ class _NewExpenseState extends State<NewExpense> {
       );
       return;
     }
-
-    widget.onAddExpense(
-      Expense(
-        title: _titleController.text,
-        amount: enteredAmount,
-        date: _selectedDate!,
-        category: _selectedCategory,
-      ),
-    );
+    if (widget.itemToEdit != null) {
+      widget.itemToEdit?.amount = enteredAmount;
+      widget.itemToEdit?.title = _titleController.text;
+      widget.itemToEdit?.date = _selectedDate!;
+      widget.itemToEdit?.category = _selectedCategory;
+      widget.onFinishedExpense(widget.itemToEdit!);
+    } else {
+      widget.onFinishedExpense(
+        Expense(
+          title: _titleController.text,
+          amount: enteredAmount,
+          date: _selectedDate!,
+          category: _selectedCategory,
+        ),
+      );
+    }
     Navigator.pop(context);
   }
 
@@ -97,9 +121,7 @@ class _NewExpenseState extends State<NewExpense> {
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    prefixText: '\$ ',
-                    label: Text('Amount'),
-                  ),
+                      prefixText: '\$ ', label: Text('Amount')),
                 ),
               ),
               const SizedBox(width: 16),

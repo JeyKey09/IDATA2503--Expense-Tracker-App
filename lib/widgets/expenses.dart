@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:expense_tracker/widgets/new_expense.dart';
+import 'package:expense_tracker/widgets/expenseMenu.dart';
 import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/widgets/chart/chart.dart';
 
+/// A representation of the expenses screen.
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
 
@@ -14,7 +15,9 @@ class Expenses extends StatefulWidget {
   }
 }
 
+/// A state class for the expenses screen.
 class _ExpensesState extends State<Expenses> {
+  /// A list of registered expenses.
   final List<Expense> _registeredExpenses = [
     Expense(
       title: 'Flutter Course',
@@ -30,20 +33,23 @@ class _ExpensesState extends State<Expenses> {
     ),
   ];
 
+  /// A function that opens the add expense overlay.
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+      builder: (ctx) => ExpenseMenu(onFinishedExpense: _addExpense),
     );
   }
 
+  /// A function that adds an expense to the list of registered expenses.
   void _addExpense(Expense expense) {
     setState(() {
       _registeredExpenses.add(expense);
     });
   }
 
+  /// A function that removes an expense from the list of registered expenses.
   void _removeExpense(Expense expense) {
     final expenseIndex = _registeredExpenses.indexOf(expense);
     setState(() {
@@ -66,6 +72,29 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  /// A function that opens the edit expense overlay.
+  void _openEditExpenseOverlay(Expense expense) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (ctx) => ExpenseMenu(
+        onFinishedExpense: _editExpense,
+        itemToEdit: expense,
+      ),
+    );
+  }
+
+  /// A function that edits an expense in the list of registered expenses.
+  void _editExpense(Expense expense) {
+    setState(() {
+      final expenseIndex = _registeredExpenses.indexWhere(
+        (element) => element.id == expense.id,
+      );
+      //_registeredExpenses.removeAt(expenseIndex);
+      _registeredExpenses[expenseIndex] = expense;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget mainContent = const Center(
@@ -76,6 +105,7 @@ class _ExpensesState extends State<Expenses> {
       mainContent = ExpensesList(
         expenses: _registeredExpenses,
         onRemoveExpense: _removeExpense,
+        onEditExpense: _openEditExpenseOverlay,
       );
     }
 
