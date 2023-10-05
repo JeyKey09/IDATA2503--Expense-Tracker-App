@@ -16,6 +16,14 @@ Since this application is mostly written using a tutorial given within a Udemy c
 
 ### As a person I want to be able to change my finances so I can edit it in case of mistyping or wrong categorizing
 
+#### Criterias
+
+- **Given** that I have been presented with a list of expenses
+- **When** I press on one of the expenses it will allow me for editing it
+- **Then** after I have edited it, and pressed confirm, the expense should be changed
+
+#### Solution
+
 This can be done trough modifying the new_expense to [expenseMenu](./lib/widgets/expenseMenu.dart).
 The changes includes allowing the menu to accept a expense so we know if we are modifying or it is a new one. The reason we are changing the class instead of implementing a new one, is because the widget already meets our requirements for attributes in the expense to be changed .
 
