@@ -169,3 +169,9 @@ ExpenseItem o-- Expense
 ExpenseItem : +build() Widget
 StatelessWidget <|-- ExpenseItem
 ```
+
+## Peer review
+
+Have not gotten in contact with my peer review partner.
+
+As discussed with the teacher, I was to include a note about it here.
