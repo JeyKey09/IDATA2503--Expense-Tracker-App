@@ -170,8 +170,9 @@ ExpenseItem : +build() Widget
 StatelessWidget <|-- ExpenseItem
 ```
 
-## Peer review
+## Group discussion
 
-Have not gotten in contact with my peer review partner.
+As of the group I were included in, we worked individually and discussed each other's code afterwards. Both of us had created the same feature but implemented it differently, one modifying the existing new_expense and one creating a separate widget to edit it. Both approaches were discussed and could be summerized to the following:
 
-As discussed with the teacher, I was to include a note about it here.
+- Modifying the existing one allowed for less duplicity but restricted it down to the same view.
+- Creating a new widget for editing allowed for more flexibility with how it would look and function, but could create code duplicity.
